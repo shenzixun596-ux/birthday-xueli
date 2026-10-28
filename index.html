@@ -94,6 +94,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 #mascot-recall{position:fixed;right:14px;bottom:max(18px,env(safe-area-inset-bottom));z-index:24;width:44px;height:44px;border:1px solid #efcbd7;border-radius:50%;color:#a85572;background:#fff5f8;font-size:22px;cursor:pointer;touch-action:manipulation}
 #mascot-tap:focus-visible,#mascot-close:focus-visible,#mascot-recall:focus-visible{outline:2px solid #af5071;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){#mascot-widget.celebrating #mascot-tap,.mascot-heart{animation:none}#mascot-tap img{transition:none}}
+#mascot-bubble.below:after{bottom:auto;top:-5px;transform:rotate(225deg)}
 </style>
 <style>
 .music-toggle{position:fixed;z-index:20;right:16px;top:max(64px,calc(env(safe-area-inset-top) + 16px));width:44px;height:44px;border:1px solid #c7869b77;border-radius:50%;background:#fff6f0ed;color:#a94760;box-shadow:0 3px 16px #60253b12;display:grid;place-items:center;font-size:23px;line-height:1;touch-action:manipulation}.music-toggle[hidden]{display:none}.music-toggle[data-playing="true"]{background:#a94760;color:#fff6f0}.music-toggle[data-playing="true"] span{animation:music-pulse 2s ease-in-out infinite}@keyframes music-pulse{50%{transform:scale(1.15)}}@media(prefers-reduced-motion:reduce){.music-toggle span{animation:none!important}}
@@ -365,34 +366,36 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnim
 // Self-contained mascot controller. It never changes scene state or its animations.
 (()=>{
 const widget=document.getElementById('mascot-widget'),tap=document.getElementById('mascot-tap'),close=document.getElementById('mascot-close'),recall=document.getElementById('mascot-recall'),bubble=document.getElementById('mascot-bubble');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)');let x=0,y=0,move=null,timer=0,hidden=false,phrase=0,steps=0,token=0;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');let x=0,y=0,move=null,timer=0,hidden=false,phrase=0,speechTimer=0,token=0,destination=null;
 const phrases=['生日快乐！','追我呀','嘿嘿'];
-function bounds(){const v=window.visualViewport;return{w:v?v.width:innerWidth,h:v?v.height:innerHeight};}
+function bounds(){const v=window.visualViewport;return{w:v?v.width:innerWidth,h:v?v.height:innerHeight,left:v?v.offsetLeft:0,top:v?v.offsetTop:0};}
 function paint(){widget.style.transform='translate3d('+x+'px,'+y+'px,0)';}
-function obstacles(){return Array.from(document.querySelectorAll('.scene.active h1,.scene.active h2,.scene.active p,.scene.active input,.scene.active button,#music-toggle')).filter(el=>el.getClientRects().length&&!el.hidden).map(el=>el.getBoundingClientRect());}
-function safe(px,py,rects){const b=bounds();return px>=12&&py>=105&&px+80<=b.w-12&&py+80<=b.h-16&&!rects.some(r=>px<r.right+7&&px+80>r.left-7&&py<r.bottom+7&&py+80>r.top-7);}
-function pathSafe(tx,ty,rects){for(let i=1;i<=12;i++)if(!safe(x+(tx-x)*i/12,y+(ty-y)*i/12,rects))return false;return true;}
+function obstacles(){return Array.from(document.querySelectorAll('.scene.active input,.scene.active button,#music-toggle')).filter(el=>el.getClientRects().length&&!el.hidden).map(el=>el.getBoundingClientRect());}
+function safe(px,py,rects){return !rects.some(r=>px<r.right+6&&px+80>r.left-6&&py<r.bottom+6&&py+80>r.top-6);}
+function fitBubble(){const b=bounds(),w=bubble.getBoundingClientRect().width,center=Math.max(b.left+10+w/2,Math.min(b.left+b.w-10-w/2,x+40));bubble.style.left=(center-x)+'px';const below=y-b.top<55;bubble.style.bottom=below?'auto':'87px';bubble.style.top=below?'87px':'auto';bubble.classList.toggle('below',below);}
+function armSpeech(){clearTimeout(speechTimer);if(!hidden&&!document.hidden)speechTimer=setTimeout(say,12000);}
 function halt(){clearTimeout(timer);token++;if(move){const m=new DOMMatrixReadOnly(getComputedStyle(widget).transform);x=m.m41;y=m.m42;move.cancel();move=null;paint();}}
-function place(){const b=bounds(),rects=obstacles();x=Math.max(12,b.w-96);y=Math.max(105,b.h-108);if(!safe(x,y,rects)){for(let yy=b.h-100;yy>=105;yy-=24){if(safe(x,yy,rects)){y=yy;break;}}}paint();}
+function place(){const b=bounds(),rects=obstacles();x=b.left+Math.max(12,b.w-96);y=b.top+Math.max(15,b.h-108);if(!safe(x,y,rects)){for(let yy=b.top+b.h-96;yy>=b.top+15;yy-=24){if(safe(x,yy,rects)){y=yy;break;}}}paint();fitBubble();destination=null;}
 function schedule(ms){clearTimeout(timer);if(!hidden&&!document.hidden)timer=setTimeout(walk,ms);}
-function say(){bubble.textContent=phrases[phrase++%phrases.length];bubble.classList.add('visible');timer=setTimeout(()=>{bubble.classList.remove('visible');schedule(800);},2400);}
-function walk(){if(hidden||document.hidden)return;if(++steps%3===0){say();return;}if(reduced.matches){schedule(4000);return;}const b=bounds(),rects=obstacles();let target=null;
- for(let i=0;i<60;i++){const tx=Math.max(12,Math.min(b.w-92,x+(Math.random()-.5)*230)),ty=Math.max(105,Math.min(b.h-96,y+(Math.random()-.5)*220));const d=Math.hypot(tx-x,ty-y);if(d>28&&pathSafe(tx,ty,rects)){target={x:tx,y:ty,d};break;}}
- if(!target){widget.classList.toggle('facing-left');schedule(2400);return;}
- widget.classList.toggle('facing-left',target.x<x);const duration=Math.max(2500,target.d/20*1000),id=++token;
- move=widget.animate([{transform:'translate3d('+x+'px,'+y+'px,0)'},{transform:'translate3d('+target.x+'px,'+target.y+'px,0)'}],{duration,easing:'ease-in-out',fill:'forwards'});
- move.onfinish=()=>{if(id!==token)return;x=target.x;y=target.y;paint();move.cancel();move=null;schedule(1000+Math.random()*1800);};
+function say(){if(hidden||document.hidden)return;halt();bubble.textContent=phrases[phrase++%phrases.length];fitBubble();bubble.classList.add('visible');armSpeech();timer=setTimeout(()=>{bubble.classList.remove('visible');schedule(550);},2400);}
+function walk(){if(hidden||document.hidden)return;if(reduced.matches){schedule(3000);return;}const b=bounds(),rects=obstacles();let target=destination;
+ if(target&&!safe(target.x,target.y,rects))target=null;
+ if(!target)for(let i=0;i<60;i++){const tx=b.left+12+Math.random()*Math.max(0,b.w-104),ty=b.top+15+Math.random()*Math.max(0,b.h-105);if(Math.hypot(tx-x,ty-y)>28&&safe(tx,ty,rects)){target={x:tx,y:ty};break;}}
+ if(!target){widget.classList.toggle('facing-left');schedule(1600);return;}
+ destination=target;widget.classList.toggle('facing-left',target.x<x);const duration=Math.max(2000,Math.hypot(target.x-x,target.y-y)/20*1000),id=++token;
+ move=widget.animate([{transform:'translate3d('+x+'px,'+y+'px,0)'},{transform:'translate3d('+target.x+'px,'+target.y+'px,0)'}],{duration,easing:'linear',fill:'forwards'});
+ move.onfinish=()=>{if(id!==token)return;x=target.x;y=target.y;paint();move.cancel();move=null;destination=null;if(x<=b.left+14||x>=b.left+b.w-94)widget.classList.toggle('facing-left');schedule(650+Math.random()*1200);};
 }
-tap.addEventListener('click',()=>{halt();widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());widget.classList.remove('celebrating');void widget.offsetWidth;widget.classList.add('celebrating');bubble.textContent='♡';bubble.classList.add('visible');for(let i=0;i<7;i++){const heart=document.createElement('i');heart.className='mascot-heart';heart.textContent='♥';heart.setAttribute('aria-hidden','true');heart.style.cssText='--hx:'+((i-3)*12)+'px;--hy:'+(-45-i%3*18)+'px;--hr:'+((i-3)*12)+'deg;animation-delay:'+i*60+'ms';widget.appendChild(heart);}timer=setTimeout(()=>{widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());bubble.classList.remove('visible');schedule(700);},2200);});
-close.addEventListener('click',()=>{halt();hidden=true;widget.hidden=true;recall.hidden=false;bubble.classList.remove('visible');recall.focus({preventScroll:true});});
-recall.addEventListener('click',()=>{hidden=false;widget.hidden=false;recall.hidden=true;widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());place();schedule(1800);tap.focus({preventScroll:true});});
-function reset(){halt();bubble.classList.remove('visible');if(!hidden){place();schedule(2500);}}
+tap.addEventListener('click',()=>{halt();clearTimeout(speechTimer);widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());widget.classList.remove('celebrating');void widget.offsetWidth;widget.classList.add('celebrating');bubble.textContent='♡';fitBubble();bubble.classList.add('visible');for(let i=0;i<7;i++){const heart=document.createElement('i');heart.className='mascot-heart';heart.textContent='♥';heart.setAttribute('aria-hidden','true');heart.style.cssText='--hx:'+((i-3)*12)+'px;--hy:'+(-45-i%3*18)+'px;--hr:'+((i-3)*12)+'deg;animation-delay:'+i*60+'ms';widget.appendChild(heart);}timer=setTimeout(()=>{widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());bubble.classList.remove('visible');schedule(700);armSpeech();},2200);});
+close.addEventListener('click',()=>{halt();clearTimeout(speechTimer);hidden=true;widget.hidden=true;recall.hidden=false;bubble.classList.remove('visible');recall.focus({preventScroll:true});});
+recall.addEventListener('click',()=>{hidden=false;widget.hidden=false;recall.hidden=true;widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());place();schedule(1800);armSpeech();tap.focus({preventScroll:true});});
+function reset(){halt();clearTimeout(speechTimer);bubble.classList.remove('visible');if(!hidden){place();schedule(1700);armSpeech();}}
 window.addEventListener('resize',reset,{passive:true});window.visualViewport?.addEventListener('resize',reset,{passive:true});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)halt();else reset();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){halt();clearTimeout(speechTimer);}else reset();});
 new MutationObserver(reset).observe(document.querySelector('main')||document.body,{subtree:true,attributes:true,attributeFilter:['aria-hidden']});
 // Recheck obstacles after page scrolling, without continuous layout reads.
-document.getElementById('photos').addEventListener('scroll',()=>{halt();schedule(1800);},{passive:true});
-place();schedule(2600);
+document.getElementById('photos').addEventListener('scroll',()=>{if(!bubble.classList.contains('visible')){halt();schedule(1200);}},{passive:true});
+place();schedule(1700);armSpeech();
 })();
 </script></body>
 </html>
