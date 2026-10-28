@@ -76,6 +76,24 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 @media(max-height:740px){#cake{padding:42px 12px 32px}#cake h1{font-size:28px;margin:8px 0}#cake .eyebrow{font-size:9px}#cake .cake-stage{width:220px;height:220px;margin:16px 0 0}#cake .cake-wrap{transform:scale(.75862);transform-origin:top left}#cake .bottommark{bottom:12px;font-size:9px}#cake .topmark{top:20px}#cake .cake-message{min-height:40px}}
 @media(max-height:590px){#cake .cake-stage{width:200px;height:200px;margin:14px 0 0}#cake .cake-wrap{transform:scale(.689655)}#cake h1{font-size:26px;letter-spacing:2px}}
 @media(prefers-reduced-motion:reduce){#cake .candle-smoke,#cake .cake-stars i{animation:none!important}#cake .cake-message.wish-revealed{animation:none}#cake .candle.extinguished .flame{transition:none}}
+
+/* Independent floating companion; scene layout remains untouched. */
+#mascot-widget{position:fixed;left:0;top:0;width:80px;height:80px;z-index:24;pointer-events:none;will-change:transform}
+#mascot-widget[hidden],#mascot-recall[hidden]{display:none!important}
+#mascot-tap{position:absolute;inset:0;border:0;padding:0;background:transparent;cursor:pointer;pointer-events:auto;touch-action:manipulation;border-radius:24px}
+#mascot-tap img{width:80px;height:80px;object-fit:contain;display:block;border-radius:22px;filter:drop-shadow(0 3px 5px #653b5226);transition:transform .35s}
+#mascot-widget.facing-left img{transform:rotate(-4deg)}
+#mascot-close{position:absolute;right:-2px;top:-5px;width:26px;height:26px;border:1px solid #efcbd7;border-radius:50%;background:#fff8fa;color:#a85572;pointer-events:auto;cursor:pointer;font-size:18px;line-height:22px;z-index:2}
+#mascot-bubble{position:absolute;bottom:87px;left:50%;transform:translateX(-50%);white-space:nowrap;max-width:120px;padding:8px 12px;background:#fff8fa;color:#a34f6d;border:1px solid #efcbd7;border-radius:16px;font-size:12px;opacity:0;transition:opacity .25s;box-shadow:0 3px 12px #703a5212}
+#mascot-bubble.visible{opacity:1}
+#mascot-bubble:after{content:'';position:absolute;bottom:-5px;left:50%;width:8px;height:8px;background:#fff8fa;border-right:1px solid #efcbd7;border-bottom:1px solid #efcbd7;transform:rotate(45deg)}
+#mascot-widget.celebrating #mascot-tap{animation:mascot-love .65s ease-in-out 2}
+@keyframes mascot-love{50%{transform:scale(1.09) rotate(5deg)}}
+.mascot-heart{position:absolute;left:35px;top:20px;color:#e2638c;font-size:18px;pointer-events:none;animation:mascot-hearts 1.6s ease-out both}
+@keyframes mascot-hearts{0%{opacity:0;transform:translate(0,0) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(var(--hx),var(--hy)) rotate(var(--hr)) scale(1.15)}}
+#mascot-recall{position:fixed;right:14px;bottom:max(18px,env(safe-area-inset-bottom));z-index:24;width:44px;height:44px;border:1px solid #efcbd7;border-radius:50%;color:#a85572;background:#fff5f8;font-size:22px;cursor:pointer;touch-action:manipulation}
+#mascot-tap:focus-visible,#mascot-close:focus-visible,#mascot-recall:focus-visible{outline:2px solid #af5071;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#mascot-widget.celebrating #mascot-tap,.mascot-heart{animation:none}#mascot-tap img{transition:none}}
 </style>
 <style>
 .music-toggle{position:fixed;z-index:20;right:16px;top:max(64px,calc(env(safe-area-inset-top) + 16px));width:44px;height:44px;border:1px solid #c7869b77;border-radius:50%;background:#fff6f0ed;color:#a94760;box-shadow:0 3px 16px #60253b12;display:grid;place-items:center;font-size:23px;line-height:1;touch-action:manipulation}.music-toggle[hidden]{display:none}.music-toggle[data-playing="true"]{background:#a94760;color:#fff6f0}.music-toggle[data-playing="true"] span{animation:music-pulse 2s ease-in-out infinite}@keyframes music-pulse{50%{transform:scale(1.15)}}@media(prefers-reduced-motion:reduce){.music-toggle span{animation:none!important}}
@@ -343,5 +361,38 @@ function start(){if(!raf&&!document.hidden){last=0;raf=requestAnimationFrame(fra
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;last=0;}else if(stage===1||stage===2||stage===5)start();});
 })();
 </script>
-</body>
+<aside id="mascot-widget" aria-label="生日吉祥物"><span id="mascot-bubble" aria-live="polite"></span><button id="mascot-tap" type="button" aria-label="和姐姐比心"><img src="images/mascot.png" width="80" height="80" alt="姐姐的卡通头像" draggable="false"></button><button id="mascot-close" type="button" aria-label="收起吉祥物">×</button></aside><button id="mascot-recall" type="button" aria-label="唤出吉祥物" hidden>♡</button><script>
+// Self-contained mascot controller. It never changes scene state or its animations.
+(()=>{
+const widget=document.getElementById('mascot-widget'),tap=document.getElementById('mascot-tap'),close=document.getElementById('mascot-close'),recall=document.getElementById('mascot-recall'),bubble=document.getElementById('mascot-bubble');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');let x=0,y=0,move=null,timer=0,hidden=false,phrase=0,steps=0,token=0;
+const phrases=['生日快乐！','追我呀','嘿嘿'];
+function bounds(){const v=window.visualViewport;return{w:v?v.width:innerWidth,h:v?v.height:innerHeight};}
+function paint(){widget.style.transform='translate3d('+x+'px,'+y+'px,0)';}
+function obstacles(){return Array.from(document.querySelectorAll('.scene.active h1,.scene.active h2,.scene.active p,.scene.active input,.scene.active button,#music-toggle')).filter(el=>el.getClientRects().length&&!el.hidden).map(el=>el.getBoundingClientRect());}
+function safe(px,py,rects){const b=bounds();return px>=12&&py>=105&&px+80<=b.w-12&&py+80<=b.h-16&&!rects.some(r=>px<r.right+7&&px+80>r.left-7&&py<r.bottom+7&&py+80>r.top-7);}
+function pathSafe(tx,ty,rects){for(let i=1;i<=12;i++)if(!safe(x+(tx-x)*i/12,y+(ty-y)*i/12,rects))return false;return true;}
+function halt(){clearTimeout(timer);token++;if(move){const m=new DOMMatrixReadOnly(getComputedStyle(widget).transform);x=m.m41;y=m.m42;move.cancel();move=null;paint();}}
+function place(){const b=bounds(),rects=obstacles();x=Math.max(12,b.w-96);y=Math.max(105,b.h-108);if(!safe(x,y,rects)){for(let yy=b.h-100;yy>=105;yy-=24){if(safe(x,yy,rects)){y=yy;break;}}}paint();}
+function schedule(ms){clearTimeout(timer);if(!hidden&&!document.hidden)timer=setTimeout(walk,ms);}
+function say(){bubble.textContent=phrases[phrase++%phrases.length];bubble.classList.add('visible');timer=setTimeout(()=>{bubble.classList.remove('visible');schedule(800);},2400);}
+function walk(){if(hidden||document.hidden)return;if(++steps%3===0){say();return;}if(reduced.matches){schedule(4000);return;}const b=bounds(),rects=obstacles();let target=null;
+ for(let i=0;i<60;i++){const tx=Math.max(12,Math.min(b.w-92,x+(Math.random()-.5)*230)),ty=Math.max(105,Math.min(b.h-96,y+(Math.random()-.5)*220));const d=Math.hypot(tx-x,ty-y);if(d>28&&pathSafe(tx,ty,rects)){target={x:tx,y:ty,d};break;}}
+ if(!target){widget.classList.toggle('facing-left');schedule(2400);return;}
+ widget.classList.toggle('facing-left',target.x<x);const duration=Math.max(2500,target.d/20*1000),id=++token;
+ move=widget.animate([{transform:'translate3d('+x+'px,'+y+'px,0)'},{transform:'translate3d('+target.x+'px,'+target.y+'px,0)'}],{duration,easing:'ease-in-out',fill:'forwards'});
+ move.onfinish=()=>{if(id!==token)return;x=target.x;y=target.y;paint();move.cancel();move=null;schedule(1000+Math.random()*1800);};
+}
+tap.addEventListener('click',()=>{halt();widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());widget.classList.remove('celebrating');void widget.offsetWidth;widget.classList.add('celebrating');bubble.textContent='♡';bubble.classList.add('visible');for(let i=0;i<7;i++){const heart=document.createElement('i');heart.className='mascot-heart';heart.textContent='♥';heart.setAttribute('aria-hidden','true');heart.style.cssText='--hx:'+((i-3)*12)+'px;--hy:'+(-45-i%3*18)+'px;--hr:'+((i-3)*12)+'deg;animation-delay:'+i*60+'ms';widget.appendChild(heart);}timer=setTimeout(()=>{widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());bubble.classList.remove('visible');schedule(700);},2200);});
+close.addEventListener('click',()=>{halt();hidden=true;widget.hidden=true;recall.hidden=false;bubble.classList.remove('visible');recall.focus({preventScroll:true});});
+recall.addEventListener('click',()=>{hidden=false;widget.hidden=false;recall.hidden=true;widget.classList.remove('celebrating');widget.querySelectorAll('.mascot-heart').forEach(e=>e.remove());place();schedule(1800);tap.focus({preventScroll:true});});
+function reset(){halt();bubble.classList.remove('visible');if(!hidden){place();schedule(2500);}}
+window.addEventListener('resize',reset,{passive:true});window.visualViewport?.addEventListener('resize',reset,{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)halt();else reset();});
+new MutationObserver(reset).observe(document.querySelector('main')||document.body,{subtree:true,attributes:true,attributeFilter:['aria-hidden']});
+// Recheck obstacles after page scrolling, without continuous layout reads.
+document.getElementById('photos').addEventListener('scroll',()=>{halt();schedule(1800);},{passive:true});
+place();schedule(2600);
+})();
+</script></body>
 </html>
