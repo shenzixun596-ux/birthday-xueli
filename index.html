@@ -47,6 +47,35 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 @media(prefers-reduced-motion:reduce){#photos.album-motion .photo-card,#photos.album-motion .photo-open::after{transition:none}.intro-polaroid img{animation:none}}
 
 #rose{background:radial-gradient(ellipse at 50% 41%,#21101e 0%,#100b14 42%,#08080d 78%);color:#ffe5ee}#rose .topmark,#rose .bottommark{color:#b992a5}#rose p{color:#c89bac}#rose .rose-copy{bottom:11%;z-index:1}#rose h2{font-size:clamp(21px,6vw,29px);letter-spacing:2px;text-shadow:0 0 24px #e9487540}
+
+/* Cake-only candle ceremony. All moving elements use opacity and transforms. */
+#cake .cake-stage{position:relative;width:290px;height:290px;flex-shrink:0;margin:18px 0 0}
+#cake .cake-wrap{margin:0;transform:none}
+#cake .candles{left:87px;width:116px;pointer-events:none}
+#cake .candle{width:9px;height:36px}
+#cake .candle:nth-child(2),#cake .candle:nth-child(5){height:43px}
+#cake .candle:nth-child(3),#cake .candle:nth-child(4){height:48px}
+#cake .candle:nth-child(even) .flame{animation-delay:-.35s}
+#cake .candle.extinguished .flame{animation:none;opacity:0;transform:scale(.2);transition:opacity .24s,transform .24s}
+#cake .candle-smoke{position:absolute;left:3px;top:-8px;width:9px;height:26px;border-left:2px solid #bba4b4;border-radius:50%;opacity:0;pointer-events:none}
+#cake .candle.extinguished .candle-smoke{animation:candle-wisp 1.5s ease-out both}
+@keyframes candle-wisp{0%{opacity:0;transform:translate(0,0) scale(.4)}20%{opacity:.55}100%{opacity:0;transform:translate(9px,-45px) scale(1.5) rotate(18deg)}}
+#cake .cake-stars{position:absolute;left:50%;top:48px;pointer-events:none}
+#cake .cake-stars i{position:absolute;font-style:normal;font-size:17px;color:#d99742;text-shadow:0 0 10px #f7cc9480;opacity:0}
+#cake .cake-stars i:nth-child(even){color:#d4698c;font-size:13px}
+#cake .cake-stars.flying i{animation:cake-star-flight 2.2s var(--delay) ease-out both}
+@keyframes cake-star-flight{0%{opacity:0;transform:translate(-50%,0) scale(.4)}18%{opacity:1}75%{opacity:.75}100%{opacity:0;transform:translate(var(--dx),var(--rise)) scale(.5) rotate(110deg)}}
+#cake .blow-hint{font-size:12px;color:#a4777e;letter-spacing:1px;margin:0 0 4px}
+#cake .cake-message{min-height:44px;margin:0;max-width:310px;display:flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:1px;color:#a64465}
+#cake .cake-message.wish-revealed{animation:cake-wish-reveal 1.4s ease both}
+@keyframes cake-wish-reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+#cake .cake-controls{min-height:48px;margin-top:4px}
+#cake .cake-action{margin:0;min-height:44px}
+#cake [hidden]{display:none!important}
+#cake .cake-action:disabled{opacity:.65;cursor:default}
+@media(max-height:740px){#cake{padding:42px 12px 32px}#cake h1{font-size:28px;margin:8px 0}#cake .eyebrow{font-size:9px}#cake .cake-stage{width:220px;height:220px;margin:16px 0 0}#cake .cake-wrap{transform:scale(.75862);transform-origin:top left}#cake .bottommark{bottom:12px;font-size:9px}#cake .topmark{top:20px}#cake .cake-message{min-height:40px}}
+@media(max-height:590px){#cake .cake-stage{width:200px;height:200px;margin:14px 0 0}#cake .cake-wrap{transform:scale(.689655)}#cake h1{font-size:26px;letter-spacing:2px}}
+@media(prefers-reduced-motion:reduce){#cake .candle-smoke,#cake .cake-stars i{animation:none!important}#cake .cake-message.wish-revealed{animation:none}#cake .candle.extinguished .flame{transition:none}}
 </style>
 <style>
 .music-toggle{position:fixed;z-index:20;right:16px;top:max(64px,calc(env(safe-area-inset-top) + 16px));width:44px;height:44px;border:1px solid #c7869b77;border-radius:50%;background:#fff6f0ed;color:#a94760;box-shadow:0 3px 16px #60253b12;display:grid;place-items:center;font-size:23px;line-height:1;touch-action:manipulation}.music-toggle[hidden]{display:none}.music-toggle[data-playing="true"]{background:#a94760;color:#fff6f0}.music-toggle[data-playing="true"] span{animation:music-pulse 2s ease-in-out infinite}@keyframes music-pulse{50%{transform:scale(1.15)}}@media(prefers-reduced-motion:reduce){.music-toggle span{animation:none!important}}
@@ -76,8 +105,8 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 <section id="rose" class="scene" aria-label="粒子汇成一束浓红与玫粉色的玫瑰" aria-hidden="true"><div class="topmark">01 / A BOUQUET FOR YOU</div><canvas id="rose-canvas" aria-hidden="true"></canvas><div class="rose-copy"><h2>一束偏爱，全部给你</h2><p>愿你的每一天，都热烈盛放</p></div><div class="bottommark">所有温柔，都值得被你拥有</div></section>
 <section id="cake" class="scene" aria-labelledby="birthday-title" aria-hidden="true">
  <div class="topmark">02 / MAKE A LITTLE WISH</div><p class="eyebrow">TODAY IS ALL ABOUT YOU</p><h1 id="birthday-title" tabindex="-1">28 岁生日快乐</h1>
- <div class="cake-wrap" role="group" aria-label="三层粉红生日蛋糕"><div class="cake-halo"></div><div class="plate"></div><div class="tier t1"><span class="ribbon">HAPPY BIRTHDAY</span></div><div class="tier t2"><i class="berry b1"></i><i class="berry b2"></i></div><div class="tier t3"><i class="berry b1"></i><i class="berry b2"></i></div><button class="candles" id="candles" type="button" aria-label="点灭蜡烛，许个生日愿望"><span class="candle"><i class="flame"></i></span><span class="candle"><i class="flame"></i></span><span class="candle"><i class="flame"></i></span></button></div>
- <p class="cake-message" id="cake-message" aria-live="polite">轻点烛光，许一个只属于你的愿望</p><button class="primary cake-action" id="continue" type="button">继续 <span aria-hidden="true">→</span></button><div class="bottommark">新的一岁，心之所向，皆能如愿</div>
+ <div class="cake-stage"><div class="cake-wrap" role="group" aria-label="三层粉红生日蛋糕"><div class="cake-halo"></div><div class="plate"></div><div class="tier t1"><span class="ribbon">HAPPY BIRTHDAY</span></div><div class="tier t2"><i class="berry b1"></i><i class="berry b2"></i></div><div class="tier t3"><i class="berry b1"></i><i class="berry b2"></i></div><div class="candles" id="candles" aria-label="六支点亮的蜡烛"><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span><span class="candle"><i class="flame"></i><i class="candle-smoke"></i></span></div><div class="cake-stars" id="cake-stars" aria-hidden="true"><i style="--dx:-95px;--rise:-125px;--delay:0ms">✦</i><i style="--dx:-64px;--rise:-149px;--delay:65ms">✦</i><i style="--dx:-30px;--rise:-173px;--delay:130ms">✦</i><i style="--dx:0px;--rise:-125px;--delay:195ms">✦</i><i style="--dx:35px;--rise:-149px;--delay:260ms">✦</i><i style="--dx:68px;--rise:-173px;--delay:325ms">✦</i><i style="--dx:100px;--rise:-125px;--delay:390ms">✦</i></div></div></div>
+ <p class="blow-hint">点一下吹蜡烛，许个愿</p><p class="cake-message" id="cake-message" aria-live="polite"></p><div class="cake-controls"><button class="primary cake-action" id="blow-candles" type="button">吹蜡烛</button><button class="primary cake-action" id="continue" type="button" hidden>继续 <span aria-hidden="true">→</span></button></div><div class="bottommark">新的一岁，心之所向，皆能如愿</div>
 </section>
 <section id="photos" class="scene" aria-labelledby="photos-title" aria-hidden="true"><div class="album"><header class="album-header"><p class="eyebrow">03 / MOMENTS WORTH KEEPING</p><h2 id="photos-title" tabindex="-1">美好的照片</h2><p class="album-intro">从游戏到生活<br>把有一些瞬间，好好收藏</p></header><section class="album-group" aria-labelledby="portraits-title"><h3 id="portraits-title">先看看寿星</h3><p class="album-note">每一个样子的你，都值得被记录 · 轻点照片放大</p><div class="portrait-grid"><figure class="photo-card"><button type="button" class="photo-open" aria-label="放大查看：阳光下的你，永远这么好看"><img src="images/her1.jpg" alt="阳光下的你，永远这么好看" width="600" height="800" loading="lazy" decoding="async"><span class="photo-zoom" aria-hidden="true">↗</span></button></figure>
 <figure class="photo-card"><button type="button" class="photo-open" aria-label="放大查看：毛衣上的爱心，和你一样甜"><img src="images/her2.jpg" alt="毛衣上的爱心，和你一样甜" width="600" height="800" loading="lazy" decoding="async"><span class="photo-zoom" aria-hidden="true">↗</span></button></figure>
@@ -139,8 +168,18 @@ function show(next){
 }
 $('unlock').addEventListener('submit',e=>{e.preventDefault();if(stage!==0)return;if($('name').value.trim()==='吴雪丽'){playMusic();show(1);start();}else{$('error').textContent='密码错误，再想想';$('name').setAttribute('aria-invalid','true');$('name').focus();}});
 $('name').addEventListener('input',()=>{$('error').textContent='';$('name').removeAttribute('aria-invalid');});
-$('candles').addEventListener('click',()=>{if(stage!==3)return;$('candles').classList.add('out');$('candles').disabled=true;$('candles').setAttribute('aria-label','蜡烛已熄灭，愿你所愿皆成真');$('cake-message').textContent='愿望已收到 ♡ 愿你所愿，皆能成真';});
-$('continue').addEventListener('click',()=>{if(stage===3){show(4);start();}});
+let cakeBlowing=false,cakeFinished=false;
+$('blow-candles').addEventListener('click',()=>{
+ if(stage!==3||cakeBlowing||cakeFinished)return;
+ cakeBlowing=true;const button=$('blow-candles'),candles=Array.from($('candles').children);button.disabled=true;
+ candles.forEach((c,i)=>setTimeout(()=>c.classList.add('extinguished'),i*300));
+ setTimeout(()=>{
+  $('candles').setAttribute('aria-label','六支蜡烛已全部熄灭');$('cake-stars').classList.add('flying');
+  setTimeout(()=>{$('cake-message').textContent='愿你 28 岁天天开心，心想事成。';$('cake-message').classList.add('wish-revealed');},450);
+  setTimeout(()=>{cakeFinished=true;button.hidden=true;$('continue').hidden=false;if(document.activeElement===button)$('continue').focus({preventScroll:true});},1900);
+ },candles.length*300);
+});
+$('continue').addEventListener('click',()=>{if(stage===3&&cakeFinished){show(4);start();}});
 
 
 let photoIntroPlayed=false;
