@@ -96,7 +96,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 @media(prefers-reduced-motion:reduce){#mascot-widget.celebrating #mascot-tap,.mascot-heart{animation:none}#mascot-tap img{transition:none}}
 #mascot-bubble.below:after{bottom:auto;top:-5px;transform:rotate(225deg)}
 #wishes .heart-center{transition:none;z-index:2;padding:8px 12px;border-radius:50%;background:radial-gradient(ellipse,#30202ee8,transparent 72%)}#wishes .heart-center b{font-size:48px}#wishes .heart-center p{font-size:11px;letter-spacing:2px}
-#wishes .heart-center{padding:0 4px}#wishes .heart-center b{display:block;font-size:40px;line-height:1.1}#wishes .heart-center p{margin:4px 0 0;line-height:16px}</style>
+#wishes .heart-center{padding:0 4px}#wishes .heart-center b{display:block;font-size:40px;line-height:1.1}#wishes .heart-center p{margin:4px 0 0;line-height:16px}#wishes #wish-caption{bottom:76px}#wishes-next{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));z-index:3;padding:12px 30px;font-size:12px;min-height:44px}#wishes-next:disabled{opacity:.3;pointer-events:none}#fireworks{background:#060b19;color:#fff1f6}#fireworks .topmark{color:#a394b5}#replay-fireworks{position:absolute;bottom:max(28px,env(safe-area-inset-bottom));z-index:2;font-size:13px;background:#9f486aaa;border:1px solid #edaccb66;min-height:44px}#fireworks-canvas{touch-action:none}</style>
 <style>
 .music-toggle{position:fixed;z-index:20;right:16px;top:max(64px,calc(env(safe-area-inset-top) + 16px));width:44px;height:44px;border:1px solid #c7869b77;border-radius:50%;background:#fff6f0ed;color:#a94760;box-shadow:0 3px 16px #60253b12;display:grid;place-items:center;font-size:23px;line-height:1;touch-action:manipulation}.music-toggle[hidden]{display:none}.music-toggle[data-playing="true"]{background:#a94760;color:#fff6f0}.music-toggle[data-playing="true"] span{animation:music-pulse 2s ease-in-out infinite}@keyframes music-pulse{50%{transform:scale(1.15)}}@media(prefers-reduced-motion:reduce){.music-toggle span{animation:none!important}}
 #wishes .heart-center{padding:0 4px}#wishes .heart-center b{display:block;font-size:40px;line-height:1.1}#wishes .heart-center p{margin:4px 0 0;line-height:16px}</style>
@@ -141,7 +141,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 <figure class="photo-card"><button type="button" class="photo-open" aria-label="放大查看：家园里的一桌饭，吃的是团圆"><img src="images/game4.jpg" alt="家园里的一桌饭，吃的是团圆" width="1000" height="700" loading="lazy" decoding="async"><span class="photo-zoom" aria-hidden="true">↗</span></button><figcaption>家园里的一桌饭，吃的是团圆</figcaption></figure>
 <figure class="photo-card"><button type="button" class="photo-open" aria-label="放大查看：一起开的箱子，都是好运"><img src="images/game5.jpg" alt="一起开的箱子，都是好运" width="1000" height="700" loading="lazy" decoding="async"><span class="photo-zoom" aria-hidden="true">↗</span></button><figcaption>一起开的箱子，都是好运</figcaption></figure>
 <figure class="photo-card"><button type="button" class="photo-open" aria-label="放大查看：粉色战衣，所向披靡"><img src="images/game6.jpg" alt="粉色战衣，所向披靡" width="1000" height="700" loading="lazy" decoding="async"><span class="photo-zoom" aria-hidden="true">↗</span></button><figcaption>粉色战衣，所向披靡</figcaption></figure></div></section><div class="album-end"><p>照片装下回忆，下一页装满祝福</p><button type="button" class="primary" id="photos-continue">继续 <span aria-hidden="true">→</span></button><div class="album-footnote">有你在的每一局，都值得纪念 ♡</div></div></div></section>
-<section id="wishes" class="scene" aria-labelledby="wish-title" aria-hidden="true"><canvas id="heart-canvas" aria-hidden="true"></canvas><div class="topmark">04 / TWENTY-EIGHT WISHES</div><div class="wish-heading"><p class="eyebrow">EVERY WORD, FROM MY HEART</p><h2 id="wish-title" tabindex="-1">把祝福，写成你的模样</h2></div><div class="heart-center"><b>28</b><p>被爱包围的你</p></div><div class="bottommark" id="wish-caption">28 句心意，慢慢说给你听<br>♡</div><ol class="sr-only" id="accessible-wishes"></ol></section>
+<section id="fireworks" class="scene" aria-label="星空烟花与霓虹小猫啾咪" aria-hidden="true"><canvas id="fireworks-canvas" aria-hidden="true"></canvas><div class="topmark">05 / A SKY FULL OF WISHES</div><button class="primary" id="replay-fireworks" type="button">再看一次烟花</button></section><section id="wishes" class="scene" aria-labelledby="wish-title" aria-hidden="true"><canvas id="heart-canvas" aria-hidden="true"></canvas><div class="topmark">04 / TWENTY-EIGHT WISHES</div><div class="wish-heading"><p class="eyebrow">EVERY WORD, FROM MY HEART</p><h2 id="wish-title" tabindex="-1">把祝福，写成你的模样</h2></div><div class="heart-center"><b>28</b><p>被爱包围的你</p></div><div class="bottommark" id="wish-caption">28 句心意，慢慢说给你听<br>♡</div><button class="primary" id="wishes-next" type="button" disabled>继续 <span aria-hidden="true">→</span></button><ol class="sr-only" id="accessible-wishes"></ol></section>
 </main>
 <dialog id="photo-lightbox" class="photo-lightbox" aria-label="放大查看照片"><button type="button" class="lightbox-close" aria-label="关闭照片">×</button><img id="lightbox-image" alt=""><p id="lightbox-caption"></p><p class="lightbox-hint">轻点任意位置收回 · 也可按 Esc 关闭</p></dialog>
 <noscript>请在浏览器中启用 JavaScript，开启这份生日惊喜。</noscript>
@@ -149,7 +149,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-ev
 (()=>{
 'use strict';
 const wishes=['姐姐 28 岁生日快乐','谢谢你一直罩着我','以后换我来罩你','愿你被世界温柔以待','28 岁也要天天开心','吃好喝好身体棒','暴富暴美','烦恼通通走开','想吃啥我请客','下次打游戏一定叫你','从游戏里认识到现在','有你在我就安心','认识这么久，谢谢你还在','游戏里认识的姐也是姐','决赛圈我保你','落地成盒也一起笑','从游戏到生活，都谢谢你','永远年轻永远漂亮','累了就喊我一声，有我呢','你是最好的姐姐','28 岁是新的开始','平安喜乐都给你','我会一直陪着你','生日快乐，我的姐','愿你活成自己喜欢的样子','所有好运都向你走来','被爱包围每一天','爱你，老姐'];
-const $=id=>document.getElementById(id), scenes=['gate','countdown','rose','cake','photos','wishes'];
+const $=id=>document.getElementById(id), scenes=['gate','countdown','rose','cake','photos','wishes','fireworks'];
 const music=$('birthday-music'),musicButton=$('music-toggle');
 let musicWanted=false;
 music.volume=.45;
@@ -184,6 +184,7 @@ function show(next){
  if(stage===2)makeRose();
  if(stage===3)$('birthday-title').focus({preventScroll:true});
  if(stage===4){$('photos').scrollTop=0;$('photos-title').focus({preventScroll:true});playPhotoIntro();}
+ if(stage===6)startFireworks();
  if(stage===5){makeHeart();$('wish-title').focus({preventScroll:true});}
 }
 $('unlock').addEventListener('submit',e=>{e.preventDefault();if(stage!==0)return;if($('name').value.trim()==='吴雪丽'){playMusic();show(1);start();}else{$('error').textContent='密码错误，再想想';$('name').setAttribute('aria-invalid','true');$('name').focus();}});
@@ -355,13 +356,49 @@ function tag(l,x,y,alpha,compact){
 function drawHeart(t){
  h.clearRect(0,0,width,height);
  for(let i=0;i<42;i++){const x=((i*137.508)%997)/997*width,y=((i*251.37)%991)/991*height;h.globalAlpha=.12+.14*(1+Math.sin(t*.45+i));h.fillStyle='#e9c3d8';h.fillRect(x,y,1,1);}h.globalAlpha=1;
- const interval=.46,drawEnd=27*interval+.55,scatterStart=drawEnd+2.2,q=clamp((t-scatterStart)/2.8,0,1),count=Math.min(28,Math.floor(t/interval)+1);
+ const interval=.92,drawEnd=27*interval+.55,scatterStart=drawEnd+2.2,q=clamp((t-scatterStart)/2.8,0,1),count=Math.min(28,Math.floor(t/interval)+1);
  if(q<.5){h.beginPath();for(let i=0;i<=Math.min(560,Math.floor(count/28*560));i++){const p=heart(i/560*Math.PI*2);const x=width/2+p.x*Math.min(width*.395,240)/16,y=height*.51+p.y*Math.min(height*.26,230)/15;i?h.lineTo(x,y):h.moveTo(x,y);}h.strokeStyle='rgba(224,137,177,'+(.2*(1-q*2))+')';h.lineWidth=1;h.stroke();}
  // Fade between two non-overlapping layouts instead of sending tags through each other.
  labels.slice(0,count).forEach((l,i)=>{const compact=q<.5,p=compact?heartPoints[i]:{x:l.fx,y:l.fy},opacity=compact?1-q*2:(q-.5)*2,drift=reduce||compact?0:1;tag(l,p.x+Math.sin(t*.2+l.phase)*2*drift,p.y+Math.cos(t*.17+l.phase)*2*drift,ease((t-i*interval)/.5)*opacity,compact);});
  $('wishes').querySelector('.heart-center').style.opacity='1';
+ $('wishes-next').disabled=q<1;
  if(q>0&&!scattered){scattered=true;$('wish-title').textContent='愿你一直，被爱包围';$('wish-caption').innerHTML='从游戏到生活，我会一直陪着你<br>生日快乐，我的姐 ♡';}
 }
+
+// Finale owns one bounded particle loop; no audio or changes to earlier scenes.
+let fxFrame=0,fxLast=0,fxTime=0,fxLaunch=0,fxRound=0,fxW=0,fxH=0,fxParticles=[],fxRockets=[];
+const fxCanvas=$('fireworks-canvas'),fx=fxCanvas.getContext('2d'),fxColors=['#79b9ff','#70f3b4','#ffe482','#ff9bca','#ff637e','#c19bff'];
+function fxResize(){fxW=innerWidth;fxH=innerHeight;const d=Math.min(devicePixelRatio||1,2);fxCanvas.width=fxW*d;fxCanvas.height=fxH*d;fx.setTransform(d,0,0,d,0,0);}
+function startFireworks(){cancelAnimationFrame(fxFrame);fxFrame=0;fxLast=0;fxTime=0;fxLaunch=.3;fxRound=0;fxParticles=[];fxRockets=[];fxResize();fxFrame=requestAnimationFrame(fxTick);}
+$('wishes-next').addEventListener('click',()=>{if(stage===5&&!$('wishes-next').disabled)show(6);});
+$('replay-fireworks').addEventListener('click',()=>{if(stage===6)startFireworks();});
+window.addEventListener('resize',()=>{if(stage===6)fxResize();},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(fxFrame);fxFrame=0;fxLast=0;}else if(stage===6&&!fxFrame)fxFrame=requestAnimationFrame(fxTick);});
+function fxBurst(rocket){const count=fxW<500?190:280,scale=Math.min(fxW/390,1.6),color=rocket.color;
+ for(let i=0;i<count&&fxParticles.length<1600;i++){const a=Math.random()*Math.PI*2,z=rand(-1,1),shell=Math.sqrt(1-z*z),speed=rand(65,115)*shell*scale,life=rand(1.8,3.4);fxParticles.push({x:rocket.x,y:rocket.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life,max:life,color:i%6===0?'#fff5de':color,trail:[],sample:0,size:rand(.9,1.5),phase:rand(0,6.28)});}
+}
+function fxCat(t){const alpha=clamp((t-17)/2.5,0,1);if(!alpha)return;const scale=Math.min(fxW/380,fxH/650,1.25);fx.save();fx.translate(fxW/2,fxH*.49+(reduce?0:Math.sin(t*1.1)*3));fx.scale(scale,scale);fx.globalAlpha=alpha;fx.strokeStyle='#fff5ff';fx.fillStyle='#fff5ff';fx.lineWidth=2.3;fx.lineCap='round';fx.lineJoin='round';fx.shadowColor='#f0bfff';fx.shadowBlur=reduce?8:10+Math.sin(t*1.6)*3;
+ fx.beginPath();fx.moveTo(-69,-24);fx.bezierCurveTo(-88,-70,-76,-106,-44,-76);fx.lineTo(-26,-60);fx.quadraticCurveTo(0,-72,29,-60);fx.lineTo(49,-79);fx.bezierCurveTo(79,-105,89,-62,72,-25);fx.bezierCurveTo(76,16,47,36,0,35);fx.bezierCurveTo(-48,36,-77,16,-69,-24);fx.stroke();
+ fx.beginPath();fx.moveTo(-64,-63);fx.lineTo(-59,-79);fx.lineTo(-44,-66);fx.moveTo(48,-66);fx.lineTo(61,-82);fx.lineTo(68,-62);fx.moveTo(-17,-60);fx.lineTo(-14,-51);fx.moveTo(0,-64);fx.lineTo(0,-53);fx.moveTo(17,-60);fx.lineTo(14,-51);fx.stroke();
+ const blink=!reduce&&t%5.3<.17;for(const side of [-1,1]){fx.beginPath();if(blink){fx.moveTo(side*29-6,-17);fx.quadraticCurveTo(side*29,-13,side*29+6,-17);}else fx.ellipse(side*29,-18,3.3,5.4,0,0,Math.PI*2);blink?fx.stroke():fx.fill();}
+ fx.beginPath();fx.moveTo(-10,0);fx.quadraticCurveTo(-4,8,0,2);fx.quadraticCurveTo(5,8,11,0);for(const side of [-1,1]){fx.moveTo(side*77,-9);fx.lineTo(side*101,-15);fx.moveTo(side*78,2);fx.lineTo(side*104,6);fx.moveTo(side*74,12);fx.lineTo(side*96,24);fx.moveTo(side*38,-2);fx.lineTo(side*41,5);}fx.stroke();
+ fx.beginPath();fx.moveTo(-41,32);fx.quadraticCurveTo(-59,65,-41,76);fx.quadraticCurveTo(-20,82,-4,76);fx.quadraticCurveTo(19,85,38,76);fx.quadraticCurveTo(53,64,40,34);fx.moveTo(-17,56);fx.lineTo(-18,76);fx.moveTo(14,56);fx.lineTo(15,77);fx.stroke();
+ const sway=reduce?0:Math.sin(t*.9)*7;fx.beginPath();fx.moveTo(43,65);fx.bezierCurveTo(90,78,115+sway,49,98+sway,34);fx.bezierCurveTo(82+sway,19,73,38,85,44);fx.stroke();
+ fx.font='italic 34px "KaiTi","STKaiti",cursive';fx.textAlign='center';fx.fillText('啾咪',0,128);fx.restore();
+}
+function fxTick(now){fxFrame=0;if(stage!==6||document.hidden)return;const dt=fxLast?Math.min((now-fxLast)/1000,.04):0;fxLast=now;fxTime+=dt;const t=fxTime;
+ fx.globalCompositeOperation='source-over';fx.globalAlpha=1;fx.fillStyle='#060b19';fx.fillRect(0,0,fxW,fxH);
+ for(let i=0;i<85;i++){const x=(i*137.53%997)/997*fxW,y=(i*271.17%991)/991*fxH*.9;fx.globalAlpha=.2+.4*(.5+.5*Math.sin(t*(.6+i%3*.2)+i));fx.fillStyle=i%4?'#dbe7ff':'#ffc9e5';fx.fillRect(x,y,i%9===0?2:1,i%9===0?2:1);}fx.globalAlpha=1;
+ fx.save();fx.shadowColor='#c3d5ff';fx.shadowBlur=16;fx.fillStyle='#e4eaff';fx.beginPath();fx.arc(fxW*.8,fxH*.15,19,0,Math.PI*2);fx.fill();fx.shadowBlur=0;fx.fillStyle='#060b19';fx.beginPath();fx.arc(fxW*.8+8,fxH*.15-6,18,0,Math.PI*2);fx.fill();fx.restore();
+ if(t>=fxLaunch&&fxRound<12){const targetY=fxH*rand(.22,.48),flight=rand(1.1,1.5),x=fxW*rand(.18,.82);fxRockets.push({x,y:fxH*.89,vy:(targetY-fxH*.89)/flight,age:0,flight,color:fxColors[fxRound%6],trail:[]});fxRound++;fxLaunch=t+(fxRound>7?.6:1.2);}
+ fx.globalCompositeOperation='lighter';
+ for(let i=fxRockets.length-1;i>=0;i--){const p=fxRockets[i];p.age+=dt;p.y+=p.vy*dt;p.trail.push({x:p.x,y:p.y});if(p.trail.length>18)p.trail.shift();fx.strokeStyle=p.color;for(let j=1;j<p.trail.length;j++){fx.globalAlpha=j/p.trail.length*.65;fx.lineWidth=1.3;fx.beginPath();fx.moveTo(p.trail[j-1].x,p.trail[j-1].y);fx.lineTo(p.trail[j].x,p.trail[j].y);fx.stroke();}fx.globalAlpha=1;fx.fillStyle='#fff8ee';fx.fillRect(p.x-1,p.y-2,2,4);if(p.age>=p.flight){fxBurst(p);fxRockets.splice(i,1);}}
+ for(let i=fxParticles.length-1;i>=0;i--){const p=fxParticles[i];p.life-=dt;if(p.life<=0){fxParticles.splice(i,1);continue;}const drag=Math.exp(-.48*dt);p.vx*=drag;p.vy=p.vy*drag+24*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.sample+=dt;if(p.sample>=.025){p.sample=0;p.trail.push({x:p.x,y:p.y});if(p.trail.length>16)p.trail.shift();}const fade=Math.pow(p.life/p.max,.7),spark=p.life<1?.4+.6*Math.abs(Math.sin(t*23+p.phase)):1;fx.strokeStyle=p.color;fx.lineWidth=p.size;for(let j=1;j<p.trail.length;j++){fx.globalAlpha=fade*spark*(j/p.trail.length)*.9;fx.beginPath();fx.moveTo(p.trail[j-1].x,p.trail[j-1].y);fx.lineTo(p.trail[j].x,p.trail[j].y);fx.stroke();}fx.globalAlpha=fade*spark;fx.fillStyle=p.life>p.max-.18?'#ffffff':p.color;fx.fillRect(p.x,p.y,p.size,p.size);}
+ fx.globalAlpha=1;fx.globalCompositeOperation='source-over';fxCat(t);
+ const meteor=t%11;if(t>18&&meteor<1.1&&!reduce){const u=meteor/1.1,x=fxW*(.1+u*.75),y=fxH*(.12+u*.22);fx.save();const g=fx.createLinearGradient(x-70,y-24,x,y);g.addColorStop(0,'#ffffff00');g.addColorStop(1,'#fff1ff');fx.strokeStyle=g;fx.globalAlpha=Math.sin(u*Math.PI);fx.lineWidth=1.5;fx.beginPath();fx.moveTo(x-70,y-24);fx.lineTo(x,y);fx.stroke();fx.restore();}
+ fxFrame=requestAnimationFrame(fxTick);
+}
+
 let number=-1,scattered=false;
 function frame(now){raf=0;if(document.hidden){last=0;return;}const dt=last?Math.max((now-last)/1000,0):0;last=now;elapsed+=dt;
  if(stage===1){const n=5-Math.floor(elapsed/.8);if(n<=0)show(2);else if(number!==n){number=n;const el=$('countdown').querySelector('.number');el.textContent=n;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}}
